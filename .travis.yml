@@ -1,0 +1,43 @@
+os: linux
+dist: trusty
+language: cpp
+services: [ docker ]
+
+cache:
+  directories:
+  - vendor/bundle
+  - "$HOME/.pub-cache"
+
+env:
+  matrix:
+  - OS=centos DIST=7.6.1810
+
+matrix:
+  fast_finish: true
+  allow_failures:
+  - env: OS=centos DIST=7.6.1810
+
+before_install:
+  - echo $TRAVIS_OS_NAME
+  - echo ${HOME}
+  - echo ${TRAVIS_BUILD_DIR}
+  - cd cruzall
+  - ./desktop/setup.sh ../cruzall-desktop
+  - cd ..
+
+install: |-
+  DOCKER=greenappers/cruzall-build:$OS${DIST:+.$DIST}${ARCH:+.$ARCH}
+  docker pull ${DOCKER}
+  docker build core/docker/$OS${DIST:+.$DIST}${ARCH:+.$ARCH} --cache-from ${DOCKER} -t ${DOCKER}
+
+script: |-
+  docker run -it --rm -e OS=${OS} -e DIST=${DIST} \
+  -w /cruzall-linux/cruzall -v $TRAVIS_BUILD_DIR:/cruzall-linux \
+  -e ENABLE_FLUTTER_DESKTOP=true ${DOCKER} bash -c \
+  "git clone https://github.com/flutter/flutter.git -b master /root/flutter && flutter doctor -v && flutter precache --linux && flutter packages get && flutter -v build linux --release"
+
+after_success:
+  - echo "success"
+
+after_failure:
+  - echo "failure"
