@@ -28,7 +28,7 @@ before_install:
 install: |-
   DOCKER=greenappers/cruzall-build:$OS${DIST:+.$DIST}${ARCH:+.$ARCH}
   docker pull ${DOCKER}
-  docker build core/docker/$OS${DIST:+.$DIST}${ARCH:+.$ARCH} --cache-from ${DOCKER} -t ${DOCKER}
+  docker build docker/$OS${DIST:+.$DIST}${ARCH:+.$ARCH} --cache-from ${DOCKER} -t ${DOCKER}
 
 script: |-
   docker run -it --rm -e OS=${OS} -e DIST=${DIST} \
