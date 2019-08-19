@@ -33,7 +33,7 @@ install: |-
 script: |-
   docker run -it --rm -e OS=${OS} -e DIST=${DIST} \
   -w /cruzall-linux/cruzall -v $TRAVIS_BUILD_DIR:/cruzall-linux \
-  -e ENABLE_FLUTTER_DESKTOP=true ${DOCKER} bash -c \
+  -e ENABLE_FLUTTER_DESKTOP=true -e BASH_ENV=/root/.bashrc ${DOCKER} bash -c \
   "git clone https://github.com/flutter/flutter.git -b master /root/flutter && flutter doctor -v && flutter precache --linux && flutter packages get && flutter -v build linux --release"
 
 after_success:
