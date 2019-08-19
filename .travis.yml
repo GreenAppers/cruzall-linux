@@ -26,7 +26,7 @@ before_install:
   - cd ..
 
 install: |-
-  DOCKER=greenappers/cruzall-build:$OS${DIST:+.$DIST}${ARCH:+.$ARCH}
+  DOCKER=greenappers/cruzall-linux:$OS${DIST:+.$DIST}${ARCH:+.$ARCH}
   docker pull ${DOCKER}
   docker build docker/$OS${DIST:+.$DIST}${ARCH:+.$ARCH} --cache-from ${DOCKER} -t ${DOCKER}
 
@@ -34,10 +34,12 @@ script: |-
   docker run -it --rm -e OS=${OS} -e DIST=${DIST} \
   -w /cruzall-linux/cruzall -v $TRAVIS_BUILD_DIR:/cruzall-linux \
   -e ENABLE_FLUTTER_DESKTOP=true -e BASH_ENV=/root/.bashrc ${DOCKER} bash -c \
-  "git clone https://github.com/flutter/flutter.git -b master /root/flutter && flutter doctor -v && flutter precache --linux && flutter packages get && flutter -v build linux --release"
+  "git clone https://github.com/flutter/flutter.git -b master /root/flutter && flutter doctor -v && flutter precache --linux && flutter packages get && flutter -v build linux --release && cd .. && cpack3"
 
 after_success:
   - echo "success"
+  - md5sum $TRAVIS_BUILD_DIR/*.{rpm,deb}
 
 after_failure:
   - echo "failure"
+

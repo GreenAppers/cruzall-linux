@@ -8,7 +8,7 @@ RUN yum install -y epel-release && \
     bzip2-devel libpng-devel libjpeg-devel freetype-devel fontconfig-devel \
     gtk3-devel mesa-libGL-devel mesa-libGLU-d libXrandr-devel libXi-devel \
     libXv-devel libXt-devel libXcursor-devel redhat-lsb rpm-build \
-    mesa-dri-drivers rsync
+    mesa-dri-drivers rsync cmake3
 
 RUN echo "source scl_source enable devtoolset-7 llvm-toolset-7" >> /root/.bashrc
 RUN echo "export PATH=\$PATH:/root/flutter/bin" >> /root/.bashrc
